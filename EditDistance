@@ -1,0 +1,115 @@
+#This program reports the edit distance between two strings
+#Input two strings and it will output the steps to make the strings the same and how many steps it takes
+
+package homework9;
+
+import java.util.*;
+
+public class EditDistance {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+	
+		String a = sc.nextLine();
+		String b = sc.nextLine();
+	
+		//System.out.println(editDist(a,b));
+		System.out.println(editDistance(a,b));
+	}
+	
+	public static int editDistance(String a, String b) {
+		int aLen = a.length();
+		int bLen = b.length();
+		
+		int[][] arr = new int[aLen+1][bLen+1];
+		
+		//filling the first row and first column
+		for(int i = 0; i <= aLen; i++) { arr[i][0] = i; }
+		for(int i = 0; i <= bLen; i++) { arr[0][i] = i; }
+		
+		//loops cycles through a and b, so the table indices have to be increased by one
+		for(int i = 0; i < aLen; i++) {
+			for (int j = 0; j < bLen; j++) {
+				int replace = (arr[i][j] + vs(a.substring(i,i+1), b.substring(j,j+1)));
+				System.out.println("replace: " + replace);
+				int delete = arr[i][j+1] + 1;
+				System.out.println("delete: " + delete);
+				int insert = arr[i+1][j] + 1;
+				System.out.println("insert: " + insert);
+				arr[i+1][j+1] = min(replace, delete, insert);
+				System.out.println("new: " + arr[i+1][j+1]);
+			}
+		}
+		
+		printArray(arr,a,b);
+		
+		return arr[aLen][bLen];
+	}
+	
+	public static void printArray(int[][] R, String a, String b) {
+		a = " " + a;
+		b = " " + b;
+		System.out.print("  ");
+		for(int i = 0; i < a.length(); i++) {
+			System.out.print(a.substring(i, i+1));
+			System.out.print(" ");
+		}
+		System.out.println();
+		int count = 0;
+		for(int i = 0; i < b.length(); i++) {
+			System.out.print(b.substring(i, i+1) + " ");
+			for(int j = 0; j < a.length(); j++) {
+				System.out.print(R[j][i]);
+				System.out.print(" ");
+			}
+			System.out.println();
+		}
+	}
+	//how many moves do you have to make to turn b into a?
+	public static int editDist(String a, String b) {
+		if(a.length() >= 1 && b.length() >= 1) {
+			int change = (editDist(a.substring(0,a.length()-1), 
+					b.substring(0, b.length()-1)) + vs(a,b));
+			int delete = editDist(a.substring(0,a.length()-1), b)+1;
+			int insert = editDist(a, b.substring(0, b.length()-1))+1;
+			return min(change, insert, delete);
+		}
+		else if (a.length() < 1) {
+			return b.length();
+		}
+		else {
+			return a.length();
+		}
+	}
+	
+	public static int min(int x, int y, int z) {
+		if(x < y && x < z) {
+			return x;
+		}
+		else if (y < x && y < z) {
+			return y;
+		}
+		else {
+			return z;
+		}
+	}
+	
+	//compares the last two characters
+	public static int vs(String a, String b) {
+		String a1 = a;
+		String b1 = b;
+		if(a1.length() > 1) {
+			a1 = a.substring(a.length()-1);
+			
+		}
+		if(b1.length() > 1) {
+			b1 = b.substring(b.length()-1);
+		}
+		System.out.println("vs" + a1 + ", " + b1);
+		if(a1.equals(b1)) {
+			return 0;
+		}
+		else { 
+			return 1;
+		}
+	}
+}
