@@ -1,0 +1,57 @@
+import java.util.*;
+
+public class ActivitySelection {
+	
+	public static void main(String[] args) {
+		
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt();
+		Activity[] acts = new Activity[n];
+		
+		sc.nextLine();
+		for(int i = 0; i < n; i ++) {
+			acts[i] = new Activity(sc.next(), Float.parseFloat(sc.next()), Float.parseFloat(sc.next()));
+		}
+		
+		//sort them here by finish time
+		for(int i = 0; i < n; i++){
+			for(int j = i+1; j < n; j++) {
+				if(acts[i].endTime > acts[j].endTime) {
+					Activity temp = acts[i];
+					acts[i] = acts[j];
+					acts[j] = temp;
+				}
+			}
+		}
+		
+		float currentEndTime = 0;
+		int count = 0;
+		for(int i = 0; i < n; i++) {
+			if (acts[i].startTime > currentEndTime){
+				currentEndTime = acts[i].endTime;
+				System.out.println(acts[i]);
+				count ++;
+			}
+		}
+		
+		System.out.println(count);
+	}
+	
+}
+
+
+class Activity{
+	float startTime;
+	float endTime;
+	String name;
+	
+	public Activity(String name, float a, float b) {
+		this.startTime = a;
+		this.endTime = b;
+		this.name = name;
+	}
+	
+	public String toString() {
+		return (this.name + " " + startTime + " " + endTime);
+	}
+}
